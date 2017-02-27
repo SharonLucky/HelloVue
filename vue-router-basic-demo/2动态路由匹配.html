@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+
+<div id="app">
+  <p>
+    <router-link to="/user/foo">Go to Foo000</router-link>
+    <router-link to="/user/bar">Go to Bar2222</router-link>
+  </p>
+  <!-- 路由出口 -->
+  <!-- 路由匹配到的组件将渲染在这里 -->
+  <router-view></router-view>
+</div>
+<script>
+  const  User={
+    template:'<div>' +
+    '{{$route.params.id}}<div>{{$route.fullPath}}</div>'+
+    '</div>',
+    watch:{
+      '$route':function(to,from){
+        console.log(to)
+     }
+    }
+  }
+  
+  const router=new VueRouter({
+   routes:[
+     {path:'/user/:id',component:User}
+   ]
+  })
+  
+  const app = new Vue({
+    router
+  }).$mount('#app')
+  
+  /*
+  *
+  router.match()返回值
+  router.beforeEach((to,from,next)=>{})
+  router.scrollBehavior
+  const route=new VueRouter({
+  scrollBehavior ((to,from,savedPosition)=>{})
+  })
+ */
+  /*
+  *
+  $router.path 绝对路径
+  $router.params
+  $router.query查询参数
+  $router.hash
+  $router.fullPath
+  $router.matched
+  $router.name
+   */
+</script>
+</body>
+</html>
