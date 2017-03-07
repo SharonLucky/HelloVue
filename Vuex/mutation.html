@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>载荷</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vuex"></script>
+    <style>
+        *{
+            font-family: '微软雅黑';
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <p>1、mutations的第二个参数，载荷 payload</p>
+    <p>2、mutation 必须是同步函数</p>
+    <p>3、你可以在组件中使用 this.$store.commit('xxx') 提交 mutation，或者使用 mapMutations 辅助函数将组件中的 methods 映射为 store.commit 调用（需要在根节点注入 store）。</p>
+    <p>{{count}}</p>
+    <button @click="increment">increment++</button>
+    <button @click="decrement">decrement--</button>
+</div>
+<script>
+var store=new Vuex.Store({
+    state:{
+        count:0
+    },
+    mutations:{  //第二个参数，载荷 payload
+        increment (state,payload) {
+            state.count += payload.amount
+        },
+        decrement (state) {
+            state.count--
+        }
+    }
+})
+var app=new Vue({
+    el:"#app",
+    computed:{
+        count(){
+            return store.state.count
+        }
+    },
+    methods:{
+        increment(){
+            //提交载荷
+            //大多数情况下，载荷应该是一个对象
+            store.commit('increment',{amount:10});
+
+            //对象风格的提交方式,包含type属性的对象
+            store.commit({type:'increment',amount:10})
+        },
+        decrement(){
+            store.commit('decrement')
+        }
+    }
+})
+// store.commit('increment')
+//console.log(store.state.count)
+</script>
+</body>
+</html>

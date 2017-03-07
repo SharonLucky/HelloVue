@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Action</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vuex"></script>
+    <style>
+        *{
+            font-family: '微软雅黑';
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div>
+        <p>Action 类似于 mutation，不同在于:</p>
+        <ol>
+            <li>Action 提交的是 mutation，而不是直接变更状态。</li>
+            <li>Action 可以包含任意异步操作</li>
+        </ol>
+        <p>Action 函数接受一个与 store 实例具有相同方法和属性的 context 对象，因此你可以调用 context.commit 提交一个 mutation，
+            或者通过 context.state 和 context.getters 来获取 state 和 getters。
+            当我们在之后介绍到 Modules 时，你就知道 context 对象为什么不是 store 实例本身了。</p>
+        <p>分发action：Action 通过 store.dispatch 方法触发------store.dispatch('increment')</p>
+    </div>
+    <hr>
+    <div>
+        <p>组合Actions</p>
+        <p>Action 通常是异步的，那么如何知道 action 什么时候结束呢？更重要的是，我们如何才能组合多个 action，以处理更加复杂的异步流程？</p>
+        <p>首先，你需要明白 store.dispatch 可以处理被触发的action的回调函数返回的Promise，并且store.dispatch仍旧返回Promise：</p>
+    </div>
+    <hr>
+    <p>{{count}}</p>
+    <button @click="increment">increment++</button>
+</div>
+<script>
+var store=new Vuex.Store({
+    state:{
+        count:0
+    },
+    mutations:{
+        increment (state) {
+            state.count++
+        }
+    },
+    actions:{
+        increment(context){
+            //setTimeout(function () {
+                context.commit('increment')
+            //},1000)
+        },
+        /*参数解构来简化代码,特别是需要调用 commit 很多次的时候
+        * increment({commit}){
+        *   commit('increment')
+        * }
+        * */
+
+        //组合Actions：
+        // 首先，你需要明白 store.dispatch 可以处理被触发的action的回调函数返回的Promise，并且store.dispatch仍旧返回Promise：
+        actionA({commit}){
+           return  new Promise((resolve,reject)=>{
+                setTimeout(function(){
+                    commit('someMutation')
+                    resolve()
+                },1000)
+            })
+            /*store.dispatch('actionA').then(() => {
+             // ...
+             })*/
+        },
+        //在另一个action中也可以：
+        actionB({dispatch,commit}){
+            return dispatch('actionA').then(()=>{
+                        setTimeout(function(){
+                            commit('someOtherMutation')
+                        },1000)
+                    })
+
+        /*一个 store.dispatch 在不同模块中可以触发多个 action 函数。在这种情况下，只有当所有触发函数完成后，返回的 Promise 才会执行。*/
+        }
+    }
+})
+var app=new Vue({
+    el:"#app",
+    computed:{
+        count(){
+            return store.state.count
+        }
+    },
+    methods:{
+        increment(){
+            store.commit('increment')
+        },
+        decrement(){
+            store.commit('decrement')
+        }
+    }
+})
+// store.commit('increment')
+//console.log(store.state.count)
+</script>
+</body>
+</html>

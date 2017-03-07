@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vuex"></script>
+    <style>
+        *{
+            font-family: '微软雅黑';
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+</div>
+<script>
+var store=new Vuex.Store({
+    state:{
+        todos: [
+            { id: 1, text: '...', done: true },
+            { id: 2, text: '...', done: false }
+        ]
+    },
+    getters:{
+        doneTodos(state){
+            //Getters 会暴露为 store.getters 对象：
+            return state.todos.filter(todo=>todo.done)
+           // store.getters.doneTodos // -> [{ id: 1, text: '...', done: true }]
+        },
+        doneTodosCount(state,getter){  //接受其他 getters 作为第二个参数：
+            return getter.doneTodos.length
+        }
+    }
+
+})
+    const Counter={
+        template:"<div>组件：{{count}}</div>",
+        computed:{
+            count(){
+                return store.state.count;
+                //return this.$store.state.count
+            }
+        }
+    }
+    var app=new Vue({
+        el:"#app",
+        store,
+        components:{Counter},
+        template:`
+         <div>
+            <counter></counter>
+             <button @click="increment">increment++</button>
+             <button @click="decrement">decrement--</button>
+         </div>
+         `,
+        methods:{
+            increment(){
+                store.commit('increment')
+            },
+            decrement(){
+                store.commit('decrement')
+            }
+        }
+    })
+
+
+    /*mapState 辅助函数
+    * 当一个组件需要获取多个状态时候，将这些状态都声明为计算属性会有些重复和冗余。为了解决这个问题，我们可以使用 mapState 辅助函数帮助我们生成计算属性，让你少按几次键：*/
+</script>
+</body>
+</html>
