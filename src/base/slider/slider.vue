@@ -47,13 +47,13 @@
         }
       }, 20)
 
-      // window.addEventListener('resize', () => {
-      //   if (!this.slider) {
-      //     return
-      //   }
-      //   this._setSliderWidth(true)
-      //   this.slider.refresh()
-      // })
+      window.addEventListener('resize', () => {
+        if (!this.slider) {
+          return
+        }
+        this._setSliderWidth(true)
+        this.slider.refresh()
+      })
     },
     // activated() {
     //   if (this.autoPlay) {
@@ -63,9 +63,9 @@
     // deactivated() {
     //   clearTimeout(this.timer)
     // },
-    // beforeDestroy() {
-    //   clearTimeout(this.timer)
-    // },
+    beforeDestroy() {
+      clearTimeout(this.timer)
+    },
     methods: {
       _setSliderWidth(isResize) {
         this.children = this.$refs.sliderGroup.children
